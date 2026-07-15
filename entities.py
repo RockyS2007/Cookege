@@ -25,10 +25,6 @@ class Recipe:
     toal_cook_time_min: int
     instructions: list[str] # In order
 
-    # Worry about this implementation later
-    rating: float
-    estimated_cost: int
-
     servings: int
     oven_required: bool
     stove_required: bool
@@ -47,7 +43,7 @@ class Recipe:
         self.description = description
         self.og_link = og_link
 
-        self.toal_cook_time_min = total_cook_time_min
+        self.total_cook_time_min = total_cook_time_min
         self.servings = servings
 
         self.oven_required = oven_required
