@@ -5,7 +5,7 @@ A cooking app for university/college students struggling to figure out what to e
 > Deadline: July 27th, 2026 to finish version 1.0 of the app as I will be using it as part of my application to Hack The North 2026.
 
 
-List of technologies used: ~~Python~~, TypeScript, PostGreSQL, Supabase
+List of technologies used: TypeScript, PostGreSQL, Supabase
 
 
 Date: 07/12/26
@@ -35,3 +35,6 @@ Date: 07/13/26
  Date: 07/15/26
  - Finished a short TypeScript and some reading
  - Start learning React and Vite
+
+ Date: 07/16/26
+ - A bunch of tutorials
