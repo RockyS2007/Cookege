@@ -31,3 +31,7 @@ Date: 07/13/26
  - Learned basic CRUD operations, but need to learn TypeScript before continuing
  - Scrapped Python layer (for now) for TypeScript + Supabase
  - NOTE: create a virtual environment and environment variables for API keys
+
+ Date: 07/15/26
+ - Finished a short TypeScript and some reading
+ - Start learning React and Vite
