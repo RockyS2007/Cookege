@@ -38,3 +38,6 @@ Date: 07/13/26
 
  Date: 07/16/26
  - A bunch of tutorials
+
+ Date: 07/17/26
+ - 75% done HTML/CSS tutorial
