@@ -41,3 +41,7 @@ Date: 07/13/26
 
  Date: 07/17/26
  - 75% done HTML/CSS tutorial
+
+ Date: 07/18/26
+ - Finished HTML/CSS tutorial
+ - Took a pause today
