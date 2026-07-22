@@ -57,6 +57,10 @@ Date: 07/13/26
  - Challenges setting up a dev user that had access to all DB operations w/o letting any anon user have the same perms
  - Added DB policies for dev to all tables, probably start implementing and testing CRUD tomorrow
 
+ Date: 07/22/26
+ - Still working on DB
+ - Implementing CRUD
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
