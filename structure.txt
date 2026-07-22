@@ -1,0 +1,23 @@
+src/
+  lib/
+    supabase.ts
+  data/
+    recipes.ts
+  types/
+    database.types.ts
+  components/
+    RecipeCard.tsx
+
+src/
+  components/       # UI components
+  pages/            # screens
+  data/             # Supabase queries
+  lib/              # Supabase client
+  types/            # TypeScript types
+
+Design table
+- Add sample data
+- Query it from TypeScript
+- Display it
+- Improve the UI
+- Add another feature

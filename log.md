@@ -5,7 +5,7 @@ A cooking app for university/college students struggling to figure out what to e
 > Deadline: July 27th, 2026 to finish version 1.0 of the app as I will be using it as part of my application to Hack The North 2026.
 
 
-List of technologies used: TypeScript, HTML/CSS, Node.js, PostGreSQL, Supabase
+List of technologies used: TypeScript, HTML/CSS, Node.js, PostGreSQL, Supabase, OAuth (Supabase users)
 
 
 Date: 07/12/26
@@ -50,3 +50,13 @@ Date: 07/13/26
  Date: 07/20/26
  - 3 hour JS tutorial
  - Basically stuck in tutorial hell, still have React + Vite tutorial to do
+
+ Date: 07/21/26
+ - Reading Supabase API documentation
+ - Setting up RLS and policies
+ - Challenges setting up a dev user that had access to all DB operations w/o letting any anon user have the same perms
+ - Added DB policies for dev to all tables, probably start implementing and testing CRUD tomorrow
+
+ NOTES
+ - Review all RLS policies for newly signed up users
+ - Setup docker image
