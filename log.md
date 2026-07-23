@@ -61,6 +61,9 @@ Date: 07/13/26
  - Still working on DB
  - Implementing CRUD
 
+ Date: 07/23/26
+ - forced to take a day break, maybe code a bit
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
