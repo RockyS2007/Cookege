@@ -5,7 +5,7 @@ A cooking app for university/college students struggling to figure out what to e
 > Deadline: July 27th, 2026 to finish version 1.0 of the app as I will be using it as part of my application to Hack The North 2026.
 
 
-List of technologies used: TypeScript, HTML/CSS, Node.js, PostGreSQL, Supabase, OAuth (Supabase users)
+List of technologies used: TypeScript, HTML/CSS, Node.js, PostGreSQL, Supabase, OAuth (Supabase users), React + Vite
 
 
 Date: 07/12/26
@@ -64,6 +64,17 @@ Date: 07/13/26
  Date: 07/23/26
  - forced to take a day break, maybe code a bit
 
+ Date: 07/24/26
+ - Finishing more DB operations, basic operations working
+ - Working on the React + Vite and frontend portion
+
+ Date: 07/25/26
+ - More React + Vite implementation
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
+ - Write tests
+ - Try to setup a CI/CD pipeline
+ - Implement missing features in comments
+ - Clean up duplicate node_modules folders
