@@ -71,6 +71,10 @@ Date: 07/13/26
  Date: 07/25/26
  - More React + Vite implementation
 
+ Date: 07/26/26
+ - Finished React + Vite tutorial today
+ - Looking to linkup, configure and finish the ENTIRE PROJECT on the due date 
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
