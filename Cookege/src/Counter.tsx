@@ -3,12 +3,15 @@ import React, { useState} from 'react';
 function Counter() {
     const [ count, setCount ] = useState<number>(0);
 
+    // use an updater function because current state and updated state are not the same
+    // since react will put these changes in a queue, so count + 1 then count + 1 has a net effect 
+    // of count + 1
     const increment = () => {
-        setCount(count + 1);
+        setCount(prevCount => prevCount + 1);
     }
 
     const decrement = () => {
-        setCount(count - 1);
+        setCount(prevCount => prevCount - 1);
     }
 
     const reset = () => {

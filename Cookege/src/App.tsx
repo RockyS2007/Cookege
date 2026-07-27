@@ -10,6 +10,14 @@ import ProfilePicture from "./ProfilePicture";
 import MyComponent from "./MyComponent";
 import Counter from "./Counter";
 import MyComponent2 from "./MyComponent2";
+import ColorPicker from "./ColorPicker";
+import MyComponent3 from "./MyComponent3";
+import MyArray from "./MyArray";
+import MyCars from "./MyCars";
+import MyComponent4 from "./MyComponent4";
+import WidthHeight from "./WidthHeight";
+import ComponentA from "./ComponentA";
+import Reference from "./Reference";
 
 function App() {
   const fastFoods = [{id: 1, name: "chicken Wrap", calories: 500},
@@ -43,6 +51,14 @@ function App() {
       <MyComponent/>
       <MyComponent2/>
       <Counter/>
+      <ColorPicker/>
+      <MyComponent3/>
+      <MyArray/>
+      <MyCars/>
+      <MyComponent4/>
+      <WidthHeight/>
+      <ComponentA/>
+      <Reference/>
       <Footer/>
     </>
   );
