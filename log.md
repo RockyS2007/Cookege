@@ -75,6 +75,11 @@ Date: 07/13/26
  - Finished React + Vite tutorial today
  - Looking to linkup, configure and finish the ENTIRE PROJECT on the due date 
 
+ Date: 07/27/26
+ - Still working on the front end, need to finish reading the recipes from DB and displaying them
+ - So far can display hard coded recipes
+ - Many features to implement (search, save, rating) but won't be part of v1.0
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
