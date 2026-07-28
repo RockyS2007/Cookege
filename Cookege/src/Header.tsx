@@ -3,14 +3,7 @@ function Header() {
     return(
         <header>
             <h1>Cookege</h1>
-            <nav>
-                <ul>
-                    <li><a href="">Home</a></li>
-                    <li><a href="">About</a></li>
-                    <li><a href="">Services</a></li>
-                    <li><a href="">Contact</a></li>
-                </ul>
-            </nav>
+            <p>A cooking website for college and university students!</p>
             <hr></hr>
         </header>
     );
