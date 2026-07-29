@@ -26,13 +26,6 @@ header hr {
   text-align: center;
 }
 
-.recipe-link {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex: 1 1 calc(25% - 20px); /* four per row, matches old .recipe width logic */
-}
-
 .recipe {
   border: 5px solid #03045E;
   border-radius: 10px;
@@ -41,7 +34,18 @@ header hr {
   margin: 10px;
   text-align: center;
   box-sizing: border-box;
-  width: 100%; /* fills the .recipe-link flex item */
+  width: 100%;
+}
+
+.recipe .recipe-title {
+  font-family: "Sour Gummy", sans-serif; 
+}
+
+.recipe-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex: 1 1 calc(25% - 20px);
 }
 
 .recipe .recipe-image {
@@ -58,12 +62,8 @@ header hr {
 }
 
 .recipe .recipe-information {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Sour Gummy", sans-serif;  
   color: hsl(0%, 0%, 30%);
-}
-
-.recipe-page {
-
 }
 
 .recipe-name {
@@ -72,12 +72,21 @@ header hr {
   font-size: 2rem;
 }
 
+.recipe-instructions {
+  font-family: "Sour Gummy", sans-serif;  
+}
+
 .recipe-display-box {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  font-family: "Sour Gummy", sans-serif;
   align-items: start;
   gap: 2rem;
   padding: 2rem;
+}
+
+.recipe-description {
+  font-family: "Sour Gummy", sans-serif;
 }
 
 .recipe-image {

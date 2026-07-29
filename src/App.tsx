@@ -3,11 +3,31 @@ import Footer from "./Footer";
 import MpbappeSpecial from "./MbappeSpecial";
 import DisplayRecipesHorizontally from "./DisplayRecipesHorizontally";
 import RecipePage from "./RecipePage";
-import { foods } from "./recipe-data";
 
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import { viewFirstNRecipes } from "./supabase-client";
+
+import type { recipe, instruction, ingredient, ingredient_quantity } from "./types";
+
 function App() {
+  const [recipes, setRecipes] = useState<recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadRecipes() {
+      const result = await viewFirstNRecipes(4);
+      setRecipes(result);
+      setLoading(false);
+    }
+
+    loadRecipes();
+  }, []);
+
+  if (loading) {
+    return <p>Loading recipes...</p>;
+  }
 
   return(
     <>
@@ -17,7 +37,7 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<DisplayRecipesHorizontally recipes={ foods }/>} />
+          <Route path="/" element={<DisplayRecipesHorizontally recipes={ recipes }/>} />
           <Route path="/recipe/:id" element={<RecipePage />} />
         </Routes>
       </BrowserRouter>

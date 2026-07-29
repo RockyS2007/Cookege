@@ -1,40 +1,10 @@
 import { useParams } from "react-router-dom";
-import { foods as recipes} from "./recipe-data";
 
 // Hard coded testing
 import { mayoPancakes, mayoPancakeInstructions, 
         mayoPancakeIngredients, mayoPankcakeIngredientQuantities } from "./mayoPancakes";
 
-interface recipe {
-    id: number;
-    recipe_name: string;
-    description: string;
-    created_at: string;
-    total_time_min: number;
-    servings: number;
-    oven_required: boolean;
-    stove_required: boolean;
-    microwave_required: boolean;
-    original_link: string;
-}
-
-interface instruction {
-    instruction_id: number;
-    recipe_id: number;
-    step_num: number;
-    instruction_detail: string;
-}
-
-interface ingredient {
-    ingredient_id: number;
-    ingredient_name: string;
-}
-
-interface ingredient_quantity {
-    recipe_id: number;
-    ingredient_id: number;
-    quantity: string;
-}
+import type { recipe, instruction, ingredient, ingredient_quantity } from './types.ts';
 
 function RecipePage() {
     const { id } = useParams();
@@ -89,13 +59,15 @@ function RecipePage() {
 
                 </div>
 
-                <p>{recipe.description}</p>
+                <p className="recipe-description">{recipe.description}</p>
 
 
-                <h2>Cooking Instructions</h2>
-                <ol>
-                    {displayInstructions}
-                </ol>
+                <div className="recipe-instructions">
+                    <h2>Cooking Instructions</h2>
+                    <ol>
+                        {displayInstructions}
+                    </ol>
+                </div>
 
                 <a href={recipe.original_link}>Original Recipe</a>
             </div>
