@@ -84,6 +84,10 @@ Date: 07/13/26
  - Still working on displaying recipes on the front-end
  - Major file restructuring in the project, used 25% of monthly Codex credits just to do this...
 
+ Date: 07/29/26
+ - Finally got everything working, front-end + reading from UI
+ - Still need to add more recipes, cleanup code, automate some background processes...
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
