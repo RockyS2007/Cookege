@@ -15,11 +15,8 @@ Database migrations.
 Indexes once search volume grows.
 */
 
-// NOTE: I have removed the supabase login and moved it auth.ts
-// ONLY READ OPERATIONS from this file will work without the sign in
-
 // Read operations
-export async function viewFirstNRecipes(limit: number): Promise<recipe[]> {  // define the type
+export async function viewFirstNRecipes(limit: number): Promise<recipe[]> {
   // I want to randomize this but it seems somewhat challenging with the Supabase API
   // I'll revisit this idea later...
   const { data, error} = await supabase
@@ -28,12 +25,11 @@ export async function viewFirstNRecipes(limit: number): Promise<recipe[]> {  // 
                               .limit(limit);
 
   if (error) {
-    // console.error(error);
-    throw new Error(`Unable to ${limit} recipes`);
+    throw new Error(`Unable to query ${limit} recipes`);
   } else {
     const recipes: Array<recipe> = []; 
 
-    // Pretty stupid type conversion
+    // stupid type conversion
     for (const row of data) {
       const newRecipe: recipe = {
         id: row.id,
@@ -45,10 +41,12 @@ export async function viewFirstNRecipes(limit: number): Promise<recipe[]> {  // 
         oven_required: row.oven_required,
         stove_required: row.stove_required,
         microwave_required: row.microwave_required,
-        original_link: row.original_link
+        original_link: row.original_link,
+        image_link: row.image_link
       }
       recipes.push(newRecipe);
     }
+
     return recipes;
   }
 }
@@ -61,46 +59,88 @@ export async function returnRecipe(recipe_id: number): Promise<recipe> {
   if (error) {
     throw new Error(`Unable to retrieve recipe with id: ${recipe_id}`);
   } else {
-    return data;
+    const queriedRecipe: recipe = {
+      id: data.id,
+      recipe_name: data.recipe_name,
+      description: data.description,
+      created_at: data.created_at,
+      total_time_min: data.total_time_min,
+      servings: data.servings,
+      oven_required: data.oven_required,
+      stove_required: data.stove_required,
+      microwave_required: data.microwave_required,
+      original_link: data.original_link,
+      image_link: data.image_link
+    }
+    return queriedRecipe;
   }
 }
-export async function returnInstructions(recipe_id: number) {
+export async function returnInstructions(recipe_id: number): Promise<instruction[]> {
   const { data, error } = await supabase  
                                 .from('instructions')
                                 .select('*')
                                 .eq('recipe_id', recipe_id)
                                 .order('step_num');
   if (error) {
-    console.log(error);
+    throw new Error(`Unable to retrieve instructions for recipe ${recipe_id}`);
   } else {
-    return data;
+    const instructions: instruction[] = [];
+
+    for (const row of data) {
+      const inst: instruction = {
+        instruction_id: row.instruction_id,
+        recipe_id: row.recipe_id,
+        step_num: row.step_num,
+        instruction_detail: row.instruction
+      }
+
+      instructions.push(inst);
+    }
+
+    return instructions;
   }
 }
-export async function returnIngredientQuantity(recipe_id: number, ingredient_id: number) {
+export async function returnIngredientQuantities(recipe_id: number): Promise<ingredient_quantity[]> {
   const { data, error } = await supabase
                                 .from('ingredient_quantity')
                                 .select('*')
-                                .eq('recipe_id', recipe_id)
-                                .eq('ingredient_id', ingredient_id)
+                                .eq('recipe_id', recipe_id);
   if (error) {
-    console.log(error);
+    throw new Error(`Could not retrieve ingredients for recipe ${recipe_id}`);
   } else {
-    return data;
+    const ingredientQuantities: ingredient_quantity[] = [];
+
+    for (const row of data) {
+      const ingredQnty: ingredient_quantity = {
+        recipe_id: row.recipe_id,
+        ingredient_id: row.ingredient_id,
+        quantity: row.quantity
+      }
+
+      ingredientQuantities.push(ingredQnty);
+    }
+    
+    return ingredientQuantities;
   }
 }
-export async function returnIngredient(_ingredient_id: number) {
+export async function returnIngredient(ingredient_id: number): Promise<ingredient> {
   const { data, error } = await supabase
                                 .from('ingredients')
-                                .select('ingredient_name')
-                                .eq('ingredient_id', _ingredient_id)
+                                .select('*')
+                                .eq('ingredient_id', ingredient_id)
                                 .single();
   if (error) {
-    console.log(error);
+    throw new Error(`Could not retrieve ingredient ${ingredient_id}`);
   } else {
-    return data;
+    const ingred: ingredient = {
+        ingredient_id: data.ingredient_id,
+        ingredient_name: data.ingredient_name
+    }
+    return ingred;
   }
 }
-// FIX, not fully implemented
+
+// FIX, not fully implemented. Use this for the search functionality
 export async function searchRecipes(query: string, limit: number) {
   const { data, error} = await supabase
                               .from('recipes')

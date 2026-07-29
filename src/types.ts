@@ -9,6 +9,7 @@ export interface recipe {
     stove_required: boolean;
     microwave_required: boolean;
     original_link: string;
+    image_link: string;
 }
 
 export interface instruction {

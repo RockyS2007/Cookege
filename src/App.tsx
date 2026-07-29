@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { viewFirstNRecipes } from "./supabase-client";
 
-import type { recipe, instruction, ingredient, ingredient_quantity } from "./types";
+import type { recipe } from "./types";
 
 function App() {
   const [recipes, setRecipes] = useState<recipe[]>([]);
@@ -17,6 +17,7 @@ function App() {
 
   useEffect(() => {
     async function loadRecipes() {
+      // The number of recipes to display on the home page
       const result = await viewFirstNRecipes(4);
       setRecipes(result);
       setLoading(false);

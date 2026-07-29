@@ -1,29 +1,27 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './database.types.ts';
+import type { Database } from './src/database.types.ts';
 
-export const supabase = createClient<Database>(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-);
+const supabaseUrl = process.env.VITE_SUPABASE_URL ?? "";
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY ?? "";
+const testEmail = process.env.TEST_EMAIL ?? "";
+const testPassword = process.env.TEST_PASS ?? "";
+
+if (!supabaseUrl || !supabaseAnonKey || !testEmail || !testPassword) {
+  throw new Error(
+    'Missing VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, TEST_EMAIL, or TEST_PASS in .env.local',
+  );
+}
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // for operations that require an authenticated user
-
-const { data: loginData, error: loginError } =
-  await supabase.auth.signInWithPassword({
-    email: import.meta.env.TEST_EMAIL,
-    password: import.meta.env.TEST_PASS,
-  });
-
-if (loginError) {
-  console.log("Login failed");
-}
 
 // Create operations
 export async function insertRecipe(
   recipe_name: string, description: string,
   total_time_min: number, servings: number,
   oven_required: boolean, stove_required: boolean,
-  microwave_required: boolean, original_link: string): Promise<number> {
+  microwave_required: boolean, original_link: string, image_link: string): Promise<number> {
 
   const { data, error } = await supabase
                                 .from('recipes')
@@ -34,7 +32,8 @@ export async function insertRecipe(
                                           oven_required: oven_required,
                                           stove_required: stove_required,
                                           microwave_required: microwave_required,
-                                          original_link: original_link })
+                                          original_link: original_link,
+                                          image_link: image_link })
                                 .select('id')
                                 .single();
 
@@ -91,7 +90,7 @@ export async function insertIngredientQuantity(recipe_id: number, ingredient_id:
   }
 }
 
-// Delete operations
+// Delete operations, CHECK IMPLEMENTATIONS
 export async function deleteRecipe(recipe_id: number) {
   /**
   in the deleteRecipes function, we purposely choose to leave ingredients, despite potentially never using them
@@ -137,3 +136,98 @@ export async function deleteInstructions(recipe_id: number) {
 
 // Update operations
 // Still haven't fully thought out how I want to handle this yet, so I'll hold off for now
+
+
+// Manually inserting recipes
+async function main() {
+  const { error: loginError } = await supabase.auth.signInWithPassword({
+    email: testEmail,
+    password: testPassword,
+  });
+
+  if (loginError) {
+    throw new Error(`Login failed: ${loginError.message}`);
+  }
+
+
+  // await insertRecipe(
+  //   "Fluffy Mayo Pancakes",
+  //   "Light, tender, easy to make pancakes",
+  //   20,
+  //   4,
+  //   false,
+  //   true,
+  //   false,
+  //   "https://www.allrecipes.com/fluffy-mayo-pancakes-recipe-11979757",
+  //   "https://xkzfggmpsghtedjzttmi.supabase.co/storage/v1/object/public/recipe-images/11979757-Fluffy-Mayo-Pancakes-Peyton-Beckwith-Beauty-4x3-543813eb1c864064ad10fd6eebb1648f.webp"
+  // );
+
+  // await insertInstruction(
+  //   4,
+  //   4,
+  //   "Cook, undisturbed, until bubbles form on the surface  and lightly browned around the edges, about 3 minutes. Flip and cook until lightly browned on the second side."
+  // );
+
+  // await insertIngredient(
+  //   "flour"
+  // );
+  // await insertIngredient(
+  //   "sugar"
+  // );
+  // await insertIngredient(
+  //   "baking powder"
+  // );
+  // await insertIngredient(
+  //   "kosher salt"
+  // );
+  // await insertIngredient(
+  //   "mayonnaise"
+  // );
+  // await insertIngredient(
+  //   "water"
+  // );
+  // await insertIngredient(
+  //   "vanilla extract"
+  // );
+
+  await insertIngredientQuantity(
+    4,
+    1,
+    "1 1/2 cups"
+  );
+  await insertIngredientQuantity(
+    4,
+    2,
+    "2 1/2 tablespoons"
+  );
+  await insertIngredientQuantity(
+    4,
+    3,
+    "1 1/2 teaspoons"
+  );
+  await insertIngredientQuantity(
+    4,
+    4,
+    "1/4 teasoon"
+  );
+  await insertIngredientQuantity(
+    4,
+    5,
+    "1/2 cup"
+  );
+  await insertIngredientQuantity(
+    4,
+    6,
+    "1 1/4 cups"
+  );
+  await insertIngredientQuantity(
+    4,
+    7,
+    "1 1/2 teaspoons"
+  );
+}
+
+main().catch((error: unknown) => {
+  console.error(error);
+  process.exitCode = 1;
+});
