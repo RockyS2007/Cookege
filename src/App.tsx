@@ -13,6 +13,8 @@ function App() {
     <>
       <Header/>
 
+      <MpbappeSpecial/>
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<DisplayRecipesHorizontally recipes={ foods }/>} />
@@ -20,7 +22,6 @@ function App() {
         </Routes>
       </BrowserRouter>
 
-      <MpbappeSpecial/>
       <Footer/>
     </>
   );

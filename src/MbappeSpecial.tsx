@@ -9,12 +9,12 @@ function MbappeSpecial() {
     }
     
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        (e.target as HTMLButtonElement).textContent = "NOTHING!";
+        (e.target as HTMLButtonElement).textContent = "Mbappe!";
         window.open("https://youtube.com/shorts/KrGQC4B2UlY?si=4WEQxuNwG23ZK-bD", "_blank");
     };
 
     return(
-        <button onClick={handleClick} style={styles}>Today's Special</button>
+        <button onClick={handleClick} style={styles}>Click for Today's Special</button>
     );
 }
 

@@ -8,7 +8,7 @@ const taco: RecipeCardProps = {
   oven_required: false,
   stove_required: false,
   microwave_required: true,
-  image_url: "./assets/Griddle-Tacos.jpg",
+  image_url: "/assets/Griddle-Tacos.jpg",
 };
 
 const pizza: RecipeCardProps = {
@@ -19,7 +19,7 @@ const pizza: RecipeCardProps = {
   oven_required: true,
   stove_required: false,
   microwave_required: false,
-  image_url: "./assets/Griddle-Tacos.jpg",
+  image_url: "/assets/Griddle-Tacos.jpg",
 };
 
 export const foods = [

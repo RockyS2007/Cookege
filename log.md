@@ -80,6 +80,10 @@ Date: 07/13/26
  - So far can display hard coded recipes
  - Many features to implement (search, save, rating) but won't be part of v1.0
 
+ Date: 07/28/26
+ - Still working on displaying recipes on the front-end
+ - Major file restructuring in the project, used 25% of monthly Codex credits just to do this...
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image

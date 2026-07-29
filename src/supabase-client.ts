@@ -19,6 +19,8 @@ Indexes once search volume grows.
 // NOTE: I have removed the supabase login and moved it auth.ts
 // ONLY READ OPERATIONS from this file will work without the sign in
 
+
+
 // Create operations
 export async function insertRecipe(
   recipe_name: string, description: string,
@@ -147,11 +149,12 @@ export async function returnInstructions(recipe_id: number) {
     return data;
   }
 }
-export async function returnIngredientQuantity(recipe_id: number) {
+export async function returnIngredientQuantity(recipe_id: number, ingredient_id: number) {
   const { data, error } = await supabase
                                 .from('ingredient_quantity')
                                 .select('*')
                                 .eq('recipe_id', recipe_id)
+                                .eq('ingredient_id', ingredient_id)
   if (error) {
     console.log(error);
   } else {

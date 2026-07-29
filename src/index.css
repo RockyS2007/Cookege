@@ -1,5 +1,4 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
   background-color: #90e0ef;
 }
 
@@ -62,6 +61,46 @@ header hr {
   font-family: Arial, Helvetica, sans-serif;
   color: hsl(0%, 0%, 30%);
 }
+
+.recipe-page {
+
+}
+
+.recipe-name {
+  text-align: center;
+  font-family: "Sour Gummy", sans-serif;  
+  font-size: 2rem;
+}
+
+.recipe-display-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: start;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.recipe-image {
+  width: 100%;
+  max-width: 350px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 20%;
+}
+
+.recipe-information,
+.ingredient-list {
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .recipe-display-box {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* IGNORE ALL BELOW */
 
 .welcome-message {
   font-size: 2.5em;
