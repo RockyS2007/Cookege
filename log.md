@@ -88,10 +88,14 @@ Date: 07/13/26
  - Finally got everything working, front-end + reading from UI
  - Still need to add more recipes, cleanup code, automate some background processes...
 
+ Date: 07/30/26
+ - Adding more recipes
+ - Thinking about implementing a search bar
+ - since Cookege is up, I'll probably stop updating this log...
+
  NOTES
  - Review all RLS policies for newly signed up users
  - Setup docker image
  - Write tests
  - Try to setup a CI/CD pipeline
  - Implement missing features in comments
- - Clean up duplicate node_modules folders
