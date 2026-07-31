@@ -10,10 +10,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { viewFirstNRecipes } from "./supabase-client";
 
 import type { recipe } from "./types";
+import SearchBar from "./SearchBar";
+import SearchResultsList from "./SearchResultsList";
 
 function App() {
   const [recipes, setRecipes] = useState<recipe[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [results, setResults] = useState<recipe[]>([]);
 
   useEffect(() => {
     async function loadRecipes() {
@@ -33,10 +37,14 @@ function App() {
   return(
     <>
       <Header/>
-
-      <MpbappeSpecial/>
-
       <BrowserRouter>
+        <div className="search-bar-container">
+          <SearchBar setResults={setResults}/>
+          <SearchResultsList results={results}/>
+        </div>
+
+        <MpbappeSpecial/>
+
         <Routes>
           <Route path="/" element={<DisplayRecipesHorizontally recipes={ recipes }/>} />
           <Route path="/recipe/:id" element={<RecipePage />} />

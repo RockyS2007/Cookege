@@ -50,7 +50,7 @@ function RecipePage() {
     }
 
     loadRecipes();
-    }, []);
+    }, [recipeId]);
 
     // This is where we would query the DB, hard coded for now
     // const recipe: recipe = mayoPancakes;

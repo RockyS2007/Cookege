@@ -140,8 +140,8 @@ export async function returnIngredient(ingredient_id: number): Promise<ingredien
   }
 }
 
-// FIX, not fully implemented. Use this for the search functionality
-export async function searchRecipes(query: string, limit: number) {
+// Search operations
+export async function searchRecipes(query: string, limit: number): Promise<recipe[]> {
   const { data, error} = await supabase
                               .from('recipes')
                               .select('*')
@@ -150,8 +150,25 @@ export async function searchRecipes(query: string, limit: number) {
                               .order('recipe_name');
 
   if (error) {
-    console.error(error);
+    throw new Error(`Unable to search for ${query}`);
   } else {
+    const searchResults: recipe[] = [];
+    for (const row of data) {
+      const result:recipe = {
+        id: row.id,
+        recipe_name: row.recipe_name,
+        description: row.description,
+        created_at: row.created_at,
+        total_time_min: row.total_time_min,
+        servings: row.servings,
+        oven_required: row.oven_required,
+        stove_required: row.stove_required,
+        microwave_required: row.microwave_required,
+        original_link: row.original_link,
+        image_link: row.image_link
+      }
+      searchResults.push(result)
+    }
     return data;
   }
 }
