@@ -1,4 +1,4 @@
-Cookege is up with ONE recipe! Check it out here: https://cookege.vercel.app/
+Cookege is up with SOME recipes! Check it out here: https://cookege.vercel.app/
 
 <!--
 
