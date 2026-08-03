@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     async function loadRecipes() {
       // The number of recipes to display on the home page
-      const result = await viewFirstNRecipes(4);
+      const result = await viewFirstNRecipes(10);
       setRecipes(result);
       setLoading(false);
     }
