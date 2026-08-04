@@ -19,6 +19,8 @@ Indexes once search volume grows.
 export async function viewFirstNRecipes(limit: number): Promise<recipe[]> {
   // I want to randomize this but it seems somewhat challenging with the Supabase API
   // I'll revisit this idea later...
+
+  // IDEA: find the number of recipes and randomly query id's instead of consecutive n
   const { data, error} = await supabase
                               .from('recipes')
                               .select('*')
