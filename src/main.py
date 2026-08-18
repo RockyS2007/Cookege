@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from scraper import return_recipe, return_ingredients, return_quantities, return_instructions
 
 class Recipe(BaseModel):
     recipe_name: str
@@ -11,33 +12,65 @@ class Recipe(BaseModel):
     microwave_required: bool
     original_link: str
     image_link: str
+class Ingredients(BaseModel):
+    ingredients_list: list[str]
+class Quantities(BaseModel):
+    quantities_list: list[str]
 
-class instructions(BaseModel):
-    recipe_id: int
-    step_num: int
-    instruction: str
+class Instructions(BaseModel):
+    instructions_list: list[str]
 
-class ingredient_quantity(BaseModel):
-    recipe_id: int
-    ingredient_id: int
-    quantity: str
-
-class ingredients(BaseModel):
-    ingredient_name: str
 
 app = FastAPI()
 
-recipe_link = None
-image_link = None
+# this is the way to handle globals with FastAPI
+app.state.recipe_link = None
+app.state.image_link = None
+
+class RecipeImageURLs (BaseModel):
+    recipe_url: str
+    image_url: str
 
 
-@app.put("/recipe_link/{recipe_link}")
-def put_recipe_link(recipe_link: str):
-    recipe_link = recipe_link
-    print(recipe_link)
+@app.post("/send_links")
+def put_recipe_link(url_payload: RecipeImageURLs):
+    app.state.recipe_link = url_payload.recipe_url
+    app.state.image_link = url_payload.image_url
+    print(app.state.recipe_link)
+    print(app.state.image_link)
 
-@app.put("/image_link/{image_link}")
-def put_image_link(image_link: str):
-    image_link = image_link
-    print(image_link)
+@app.get("/recipe", response_model=Recipe)
+def get_recipe():
+    print(f"Using recipe: {app.state.recipe_link}")
+    print(f"Using image link: {app.state.image_link}")
 
+    recipe = return_recipe(app.state.recipe_link, app.state.image_link)
+    if recipe is None:
+        raise HTTPException(status_code=404, detail=f"Unable to retrieve recipe")
+    print("Recipe successfully retrieved")
+    return recipe
+
+@app.get("/ingredients", response_model=Ingredients)
+def get_ingredients():
+    ingredients = return_ingredients(app.state.recipe_link)
+    if ingredients is None:
+        raise HTTPException(status_code=404, detail=f"Unable to retrieve ingredients")
+    print("Ingredients successfully retrieved")
+    print(ingredients)
+    return ingredients
+
+@app.get("/quantities", response_model=Quantities)
+def get_quantities():
+    quantities = return_quantities(app.state.recipe_link)
+    if quantities is None:
+        raise HTTPException(status_code=404, detail="Unable to retrieve quantities")
+    print("Quantities successfully retrieved")
+    return quantities
+
+@app.get("/instructions", response_model=Instructions)
+def get_instructions():
+    instructions = return_instructions(app.state.recipe_link)
+    if instructions is None:
+        raise HTTPException(status_code=404, detail="Unable to retrieve instructions")
+    print("Instructions successfully retrieved")
+    return instructions
