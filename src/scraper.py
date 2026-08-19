@@ -1,5 +1,4 @@
 # For educational purposes only
-from __future__ import annotations
 from bs4 import BeautifulSoup
 from curl_cffi import requests
 
@@ -10,9 +9,23 @@ OVEN_KEYWORDS = ["oven"]
 STOVE_KEYWORDS = ["skillet", "stove", "medium heat", "griddle"]
 MICROWAVE_KEYWORDS = ["microwave"]
 
-BASE_MODEL_MAPPING = {}
+# These mappings MUST match the structure of the classes derived from BaseModel in main.py
+BASE_MODEL_MAPPING = {
+    "ingredients": "ingredients_list",
+    "quantities": "quantities_list",
+    "instructions": "instructions_list"
+}
 
 def time_to_mins(time: str) -> int:
+    """
+    Return the conversion from hours and minutes to minutes.
+
+    Args:
+        time: The time as a string with hours and minutes.
+
+    Returns:
+        A integer, the time converted to minutes.
+    """
     tokenized = time.split()
 
     mins = 0
@@ -24,23 +37,27 @@ def time_to_mins(time: str) -> int:
     if "mins" in tokenized:
         mins = int(tokenized[tokenized.index("mins") - 1])
     if "min" in tokenized:
-        # idek if this is a real case but im not tryna find out
         mins = int(tokenized[tokenized.index("min") - 1])
 
     return hours * 60 + mins
 
-def find_detail_content(target_title: str, soup: BeautifulSoup) -> str:
-    item = next(x.find(class_="mm-recipes-details__value").string 
-                for x in soup.find_all(class_="mm-recipes-details__item") 
-                if x.find(class_="mm-recipes-details__label").string == target_title).strip()
-    return item
-
 def clean_text(original: str) -> str:
+    """
+    Return a cleaned string, which converts unicode fractions into their character parts.
+
+    For example: ½ -> 1/2
+
+    Args:
+        original: The original string.
+
+    Returns:
+        A cleaned string.
+    """
     cleaned = []
 
     for ch in original:
         if 'FRACTION' in unicodedata.name(ch):
-            decimal =unicodedata.numeric(ch)
+            decimal = unicodedata.numeric(ch)
             frac = Fraction(decimal).limit_denominator()
             cleaned.append(f"{frac.numerator}/{frac.denominator}")
         else:
@@ -48,63 +65,136 @@ def clean_text(original: str) -> str:
 
     return "".join(cleaned)
 
-def return_ingredients(recipe_link: str) -> dict[str, list[str]] | None:
-    list_name = "mm-recipes-structured-ingredients__list"
-    item_name = "mm-recipes-structured-ingredients__list-item"
+def find_detail_content(target_title: str, soup: BeautifulSoup) -> str | None:
+    """
+    Return the total cooking time or servings based on the target title.
 
-    if not recipe_link:
+    Args:
+        target_title: A string with the label which the value is located under.
+        soup: The BeautifulSoup object being used for parsing the HTML (this is a helper function).
+
+    Returns:
+        The value of contained in the label.
+        Returns None if there was an error parsing the HTML.
+    """
+    DETAILS_VALUE = "mm-recipes-details__value"
+    DETAILS_ITEM = "mm-recipes-details__item"
+    DETAILS_LABEL = "mm-recipes-details__label"
+
+    try:
+        item = next(x.find(class_=DETAILS_VALUE).string 
+                    for x in soup.find_all(class_=DETAILS_ITEM) 
+                    if x.find(class_=DETAILS_LABEL).string == target_title).strip()
+    except Exception as e:
+        print(f"Error finding detail content {target_title}.\nDetails: {e}")
         return None
-    
+    return item
+
+def extract_ingredient_list_details(recipe_link: str, selected_detail: str) -> list[str] | None:
+    """
+    Return the list of ingredient names or ingredient quantities based on selected_detail parameter.
+
+    Args:
+        recipe_link: The link of an allrecipes.com recipe.
+        selected_detail: A string, either "ingredients" or "quantities".
+
+    Returns:
+        A list of the specified details for the ingredients of this recipe.
+        Returns None if an error occurred in parsing the HTML.
+    """
+    INGREDIENT_LIST_ELEMENT = "mm-recipes-structured-ingredients__list"
+    LIST_ITEM_ELEMENT = "mm-recipes-structured-ingredients__list-item"
+
     try:
         response = requests.get(recipe_link, impersonate="chrome")
         soup = BeautifulSoup(response.content, "html.parser")
 
-        ingredients = []
+        details = []
         
-        for ingredient in soup.find(class_=list_name).find_all(class_=item_name):
+        for ingredient in soup.find(class_=INGREDIENT_LIST_ELEMENT).find_all(class_=LIST_ITEM_ELEMENT):
             items = ingredient.find("p").find_all("span")
-            if len(items) == 2:
-                ingredients.append(items[1].text)
-            elif len(items) == 3:
-                ingredients.append(items[2].text)
+            if len(items) != 3:
+                # We will only process ingredients that have exactly the following 3 properties
+                #   - data-ingredient-quantity
+                #   - data-ingredient-unit
+                #   - data-ingredient-name
+                continue
+
+            if selected_detail == "quantities":
+                raw_text = items[0].text
+                if items[1].text != "":
+                    raw_text += " " + items[1].text
+                details.append(clean_text(raw_text))
+
+            if selected_detail == "ingredients":
+                raw_text = items[2].text
+                details.append(clean_text(raw_text))
     
-        return {"ingredients_list": ingredients}
-    except Exception:
-        print("Error in retrieving ingredient details")
+        return details
+    except Exception as e:
+        print(f"Error extracting {selected_detail}\nDetails: {e}")
         return None
+
+def return_ingredients(recipe_link: str) -> dict[str, list[str]] | None:
+    """
+    Return a list of ingredients wrapped in a dictionary. The expected JSON format for the API.
+
+    The returned value looks like:
+    {BASE_MODEL_MAPPING["ingredients"]: [ingredient_1, ingredient_2, ..., ingredient_n]}
+
+    Args:
+        recipe_link: The link of an allrecipes.com recipe.
+
+    Returns:
+        A dictionary with the list of ingredients for the given recipe.
+        Returns None if there was an error parsing the HTML.
+    """
+
+    ingredients = extract_ingredient_list_details(recipe_link, "ingredients")
+    if ingredients is None:
+        print("Unable to retrieve ingredients for this recipe.")
+        return None
+
+    return {BASE_MODEL_MAPPING["ingredients"]: ingredients}
 
 def return_quantities(recipe_link: str) -> dict[str, list[str]] | None:
-    list_name = "mm-recipes-structured-ingredients__list"
-    item_name = "mm-recipes-structured-ingredients__list-item"
+    """
+    Return a list of quantities wrapped in a dictionary. The expected JSON format for the API.
 
-    if not recipe_link:
-        return None
-        
-    try:
-        response = requests.get(recipe_link, impersonate="chrome")
-        soup = BeautifulSoup(response.content, "html.parser")
+    The returned value looks like:
+    {BASE_MODEL_MAPPING["quantities"]: [quantity_1, quantity_2, ..., quantity_n]}
 
-        quantities = []
-        
-        for ingredient in soup.find(class_=list_name).find_all(class_=item_name):
-            items = ingredient.find("p").find_all("span")
-            if len(items) == 2:
-                quantities.append(clean_text(items[0].text))
-            elif len(items) == 3:
-                quantities.append(clean_text(items[0].text + " " + items[1].text))
-    
-        return {"quantities_list": quantities}
-    except Exception:
-        print("Error in retrieving quantity details")
+    Args:
+        recipe_link: The link of an allrecipes.com recipe.
+
+    Returns:
+        A dictionary with the list of quantities for the given recipe.
+        Returns None if there was an error parsing the HTML.
+    """
+    quantities = extract_ingredient_list_details(recipe_link, "quantities")
+    if quantities is None:
+        print("Unable to retrieve quantities for this recipe.")
         return None
+
+    return {BASE_MODEL_MAPPING["quantities"]: quantities}
 
 def return_instructions (recipe_link: str) -> dict[str, list[str]] | None:
-    list_name = "comp mntl-sc-block mntl-sc-block-startgroup mntl-sc-block-group--LI"
-    item_name = "comp mntl-sc-block mntl-sc-block-html"
+    """
+    Return a list of instructions wrapped in a dictionary. The expected JSON format for the API.
 
-    if not recipe_link:
-        print("missing recipe link")
-        return None
+    The returned value looks like:
+    {BASE_MODEL_MAPPING["instructions"]: [step_1, step_2, ..., step_n]}
+
+    Args:
+        recipe_link: The link of an allrecipes.com recipe.
+
+    Returns:
+        A dictionary with the list of instructions for the given recipe.
+        Returns None if there was an error parsing the HTML.
+    """
+
+    LIST_NAME = "comp mntl-sc-block mntl-sc-block-startgroup mntl-sc-block-group--LI"
+    ITEM_NAME = "comp mntl-sc-block mntl-sc-block-html"
 
     try:
         instructions = []
@@ -112,24 +202,44 @@ def return_instructions (recipe_link: str) -> dict[str, list[str]] | None:
         response = requests.get(recipe_link, impersonate="chrome")
         soup = BeautifulSoup(response.content, "html.parser")
 
-        for instruction in soup.find_all(class_=list_name):
-            instructions.append(instruction.find(class_=item_name).string)
+        for instruction in soup.find_all(class_=LIST_NAME):
+            instructions.append(instruction.find(class_=ITEM_NAME).string)
 
-        return {"instructions_list": instructions}
+        return {BASE_MODEL_MAPPING["instructions"]: instructions}
 
-    except Exception:
-        print("Error retrieving recipe instructions")
+    except Exception as e:
+        print(f"Error retrieving recipe instructions\nDetails: {e}")
         return None
 
-def return_recipe (recipe_link: str, image_link: str) -> tuple[dict[str, str | int | bool]] | None:
-    '''
-    Must return the following:
-    recipe_name: string, description: string,
-    total_time_min: number, servings: number,
-    oven_required: boolean, stove_required: boolean,
-    microwave_required: boolean, original_link: string, image_link: string
-    '''
+def return_recipe (recipe_link: str, image_link: str) -> dict[str, str | int | bool] | None:
+    """
+    Return a dictionary containing the recipe details. It matches the Recipe class in the API.
+
+    The returned value looks like:
+    {
+        "recipe_name": ... (str)
+        "description": ... (str)
+        "total_time_min": ... (int)
+        "servings": ... (int)
+        "oven_required": ... (bool)
+        "stove_required": ... (bool)
+        "microwave_required": ... (bool)
+        "original_link": recipe_link
+        "image_link": image_link
+    }
+
+    Args:
+        recipe_link: The link of an allrecipes.com recipe.
+        image_link: The image address of the main image for the recipe.
+
+    Returns:
+        A dictionary with the details of a recipe.
+        Returns None if there was an error parsing the HTML or one of the required links is missing.
+    """
     recipe = {}
+
+    RECIPE_NAME = "article-heading text-headline-400"
+    RECIPE_DESCRIPTION = "article-subheading text-utility-300"
 
     if not recipe_link or not image_link:
         print("missing recipe or image link")
@@ -140,8 +250,8 @@ def return_recipe (recipe_link: str, image_link: str) -> tuple[dict[str, str | i
         soup = BeautifulSoup(response.content, "html.parser")
         all_text = soup.get_text()
 
-        recipe["recipe_name"] = soup.find(class_="article-heading text-headline-400").string
-        recipe["description"] = soup.find(class_="article-subheading text-utility-300").string
+        recipe["recipe_name"] = soup.find(class_=RECIPE_NAME).string
+        recipe["description"] = soup.find(class_=RECIPE_DESCRIPTION).string
         recipe["total_time_min"] = time_to_mins(find_detail_content("Total Time:", soup))
         recipe["servings"] = int(find_detail_content("Servings:", soup))
         recipe["oven_required"] = any(x in all_text for x in OVEN_KEYWORDS)
@@ -149,8 +259,8 @@ def return_recipe (recipe_link: str, image_link: str) -> tuple[dict[str, str | i
         recipe["microwave_required"] = any(x in all_text for x in MICROWAVE_KEYWORDS)
         recipe["original_link"] = recipe_link
         recipe["image_link"] = image_link
-    except Exception:
-        print("Error in retrieving recipe details")
+    except Exception as e:
+        print(f"Error in retrieving recipe details\nDetails: {e}")
         return None
 
     return recipe
@@ -199,7 +309,3 @@ if __name__ == "__main__":
         {step+1}: {instruction.strip()}""", end="")
     print("""
         -----------------------------------------------------""")
-    
-
-
-
