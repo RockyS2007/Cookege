@@ -1,3 +1,4 @@
 .env*
 !.env.example
 src/__pycache__/
+node_modules/
