@@ -16,21 +16,17 @@ class Ingredients(BaseModel):
     ingredients_list: list[str]
 class Quantities(BaseModel):
     quantities_list: list[str]
-
 class Instructions(BaseModel):
     instructions_list: list[str]
-
-
-app = FastAPI()
-
-# this is the way to handle globals with FastAPI
-app.state.recipe_link = None
-app.state.image_link = None
-
 class RecipeImageURLs (BaseModel):
     recipe_url: str
     image_url: str
 
+app = FastAPI()
+
+# handle globals with FastAPI
+app.state.recipe_link = None
+app.state.image_link = None
 
 @app.post("/send_links")
 def put_recipe_link(url_payload: RecipeImageURLs):

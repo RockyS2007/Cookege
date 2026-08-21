@@ -9,7 +9,7 @@ OVEN_KEYWORDS = ["oven"]
 STOVE_KEYWORDS = ["skillet", "stove", "medium heat", "griddle"]
 MICROWAVE_KEYWORDS = ["microwave"]
 
-# These mappings MUST match the structure of the classes derived from BaseModel in main.py
+# These mappings MUST match the structure of the classes derived from BaseModel in api.py
 BASE_MODEL_MAPPING = {
     "ingredients": "ingredients_list",
     "quantities": "quantities_list",
@@ -63,7 +63,7 @@ def clean_text(original: str) -> str:
         else:
             cleaned.append(ch)
 
-    return "".join(cleaned)
+    return "".join(cleaned).strip()
 
 def find_detail_content(target_title: str, soup: BeautifulSoup) -> str | None:
     """
@@ -203,7 +203,8 @@ def return_instructions (recipe_link: str) -> dict[str, list[str]] | None:
         soup = BeautifulSoup(response.content, "html.parser")
 
         for instruction in soup.find_all(class_=LIST_NAME):
-            instructions.append(instruction.find(class_=ITEM_NAME).string)
+            # For some reason only instructions have \n at the end 
+            instructions.append(instruction.find(class_=ITEM_NAME).string.strip())
 
         return {BASE_MODEL_MAPPING["instructions"]: instructions}
 

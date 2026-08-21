@@ -8,13 +8,6 @@ export const supabase = createClient<Database>(
   import.meta.env.VITE_SUPABASE_ANON_KEY,
 );
 
-/*
-Validation: reject invalid cooking times, missing names, etc.
-Authentication and authorization.
-Database migrations.
-Indexes once search volume grows.
-*/
-
 // Read operations
 export async function viewFirstNRecipes(limit: number): Promise<recipe[]> {
   // I want to randomize this but it seems somewhat challenging with the Supabase API
