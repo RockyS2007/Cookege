@@ -99,3 +99,5 @@ Date: 07/13/26
  - Write tests
  - Try to setup a CI/CD pipeline
  - Implement missing features in comments
+
+ THIS LOG IS DEPRECATED, random notes, ideas, and features will be written in notes.md
