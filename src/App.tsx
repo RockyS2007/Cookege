@@ -36,8 +36,8 @@ function App() {
 
   return(
     <>
-      <Header/>
       <BrowserRouter>
+        <Header/>
         <div className="search-bar-container">
           <SearchBar setResults={setResults}/>
           <SearchResultsList results={results}/>
@@ -49,9 +49,8 @@ function App() {
           <Route path="/" element={<DisplayRecipesHorizontally recipes={ recipes }/>} />
           <Route path="/recipe/:id" element={<RecipePage />} />
         </Routes>
+        <Footer/>
       </BrowserRouter>
-
-      <Footer/>
     </>
   );
 }
