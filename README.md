@@ -1,4 +1,5 @@
-Cookege is up with SOME recipes! Check it out here: https://cookege.vercel.app/
+~~Cookege is up with SOME recipes! Check it out here: https://cookege.vercel.app/~~
+Supabase keeps pausing the database due to inactivity so this project will be temporarily down until I have both new ideas + time :(
 
 <!--
 
