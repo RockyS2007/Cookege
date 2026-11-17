@@ -1,8 +1,11 @@
+// React Components
 import Header from "./Header"
 import Footer from "./Footer";
 import MpbappeSpecial from "./MbappeSpecial";
 import DisplayRecipesHorizontally from "./DisplayRecipesHorizontally";
 import RecipePage from "./RecipePage";
+import SearchBar from "./SearchBar";
+import SearchResultsList from "./SearchResultsList";
 
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -10,8 +13,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { viewFirstNRecipes } from "./supabase-client";
 
 import type { recipe } from "./types";
-import SearchBar from "./SearchBar";
-import SearchResultsList from "./SearchResultsList";
 
 function App() {
   const [recipes, setRecipes] = useState<recipe[]>([]);
@@ -56,5 +57,3 @@ function App() {
 }
 
 export default App
-
-// Think about extending this project with tailwind
